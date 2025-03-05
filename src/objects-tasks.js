@@ -1,3 +1,4 @@
+/* eslint-disable prefer-object-spread */
 /* ************************************************************************************************
  *                                                                                                *
  * Please read the following tutorial before implementing tasks:                                   *
@@ -18,7 +19,6 @@
  *    shallowCopy({}) => {}
  */
 function shallowCopy(obj) {
-  // eslint-disable-next-line prefer-object-spread
   return Object.assign({}, obj);
 }
 
@@ -35,10 +35,11 @@ function shallowCopy(obj) {
  */
 function mergeObjects(objects) {
   return objects.reduce((acc, obj) => {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(obj)) {
+    Object.entries(obj).forEach((entree) => {
+      const [key, value] = entree;
       acc[key] = (acc[key] || 0) + value;
-    }
+    });
+
     return acc;
   }, {});
 }
