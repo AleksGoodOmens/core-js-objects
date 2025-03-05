@@ -18,7 +18,8 @@
  *    shallowCopy({}) => {}
  */
 function shallowCopy(obj) {
-  return JSON.parse(JSON.stringify(obj));
+  // eslint-disable-next-line prefer-object-spread
+  return Object.assign({}, obj);
 }
 
 /**
@@ -32,8 +33,15 @@ function shallowCopy(obj) {
  *    mergeObjects([{a: 1, b: 2}, {b: 3, c: 5}]) => {a: 1, b: 5, c: 5}
  *    mergeObjects([]) => {}
  */
-function mergeObjects(/* objects */) {
-  throw new Error('Not implemented');
+function mergeObjects(objects) {
+  return objects.reduce((acc, obj) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(obj)) {
+      acc[key] = (acc[key] || 0) + value;
+    }
+
+    return acc;
+  }, {});
 }
 
 /**
