@@ -1,4 +1,3 @@
-/* eslint-disable prefer-object-spread */
 /* ************************************************************************************************
  *                                                                                                *
  * Please read the following tutorial before implementing tasks:                                   *
@@ -19,7 +18,7 @@
  *    shallowCopy({}) => {}
  */
 function shallowCopy(obj) {
-  return Object.assign({}, obj);
+  return { ...obj };
 }
 
 /**
