@@ -368,32 +368,85 @@ function group(array, keySelector, valueSelector) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  selector: '',
+
+  element(value) {
+    this.checkOrder(1);
+    if (this.elementUsed)
+      throw new Error(
+        'Element should not occur more than once inside the selector'
+      );
+    const obj = this.clone();
+    obj.selector += value;
+    obj.elementUsed = true;
+    return obj;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    this.checkOrder(2);
+    if (this.idUsed)
+      throw new Error('ID should not occur more than once inside the selector');
+    const obj = this.clone();
+    obj.selector += `#${value}`;
+    obj.idUsed = true;
+    return obj;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    this.checkOrder(3);
+    const obj = this.clone();
+    obj.selector += `.${value}`;
+    return obj;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    this.checkOrder(4);
+    const obj = this.clone();
+    obj.selector += `[${value}]`;
+    return obj;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    this.checkOrder(5);
+    const obj = this.clone();
+    obj.selector += `:${value}`;
+    return obj;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    this.checkOrder(6);
+    if (this.pseudoElementUsed) {
+      throw new Error(
+        'Pseudo-element should not occur more than once inside the selector'
+      );
+    }
+    const obj = this.clone();
+    obj.selector += `::${value}`;
+    obj.pseudoElementUsed = true;
+    return obj;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+    return obj;
+  },
+
+  stringify() {
+    return this.selector;
+  },
+
+  clone() {
+    return Object.assign(Object.create(cssSelectorBuilder), this);
+  },
+
+  checkOrder(order) {
+    if (this.lastOrder > order) {
+      throw new Error(
+        'Selector parts should be arranged in the correct order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    }
+    this.lastOrder = order;
   },
 };
 
